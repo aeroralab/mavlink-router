@@ -1,0 +1,15 @@
+Source: mavlink-router
+Section: net
+Priority: optional
+Maintainer: Lucas De Marchi <lucas.demarchi@intel.com>
+Build-depends: debhelper (>=11), meson (>=0.57), ninja-build, gcc-aarch64-linux-gnu [arm64]
+Standards-Version: 4.1.3
+Vcs-Git: https://github.com/mavlink-router/mavlink-router.git
+Vcs-Browser: https://github.com/mavlink-router/mavlink-router
+
+Package: mavlink-router
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: MAVLink message distributions between multiple endpoints
+ It distributes packets to a single port or multiple endpoints depending
+ on the target address. Connections can be made via UART, UDP or TCP.

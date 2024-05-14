@@ -1,0 +1,5 @@
+mavlink-router (4.0.0) focal; urgency=low
+
+  * Branch out from upstream and initial check-in
+
+ -- James Zheng <james.zheng@aeroratech.com>  Sat, 11 May 2024 17:26:15 +0800
