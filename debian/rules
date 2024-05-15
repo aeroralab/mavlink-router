@@ -31,7 +31,7 @@ include /usr/share/dpkg/architecture.mk
 	dh $@ -Bbuild-$(DEB_HOST_ARCH)
 
 override_dh_auto_configure:
-	meson setup build-$(DEB_HOST_ARCH) --cross-file meson-cross-$(DEB_HOST_ARCH).ini -Dsystemdsystemunitdir=/usr/lib/systemd/system
+	meson setup build-$(DEB_HOST_ARCH) --cross-file meson-cross-$(DEB_HOST_ARCH).ini -Dsystemdsystemunitdir=/lib/systemd/system
 
 override_dh_shlibdeps:
 	dh_shlibdeps -l/usr/$(DEB_HOST_MULTIARCH)/lib:/usr/lib/$(DEB_HOST_MULTIARCH)
