@@ -2,7 +2,7 @@ Source: mavlink-router
 Section: net
 Priority: optional
 Maintainer: Lucas De Marchi <lucas.demarchi@intel.com>
-Build-depends: debhelper (>=11), meson (>=0.57), ninja-build, gcc-aarch64-linux-gnu [arm64]
+Build-depends: debhelper (>=11), meson (>=0.45), ninja-build, gcc-aarch64-linux-gnu [arm64]
 Standards-Version: 4.1.3
 Vcs-Git: https://github.com/mavlink-router/mavlink-router.git
 Vcs-Browser: https://github.com/mavlink-router/mavlink-router
