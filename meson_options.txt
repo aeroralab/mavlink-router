@@ -2,3 +2,11 @@ option('systemdsystemunitdir',
        description: 'systemd unit directory',
        type: 'string',
        value: 'auto')
+option('defaultconfdir',
+       description: 'default config directory',
+       type: 'string',
+       value: '/etc/mavlink-router')
+option('defaultuartport',
+       description: 'default uart port',
+       type: 'string',
+       value: '/dev/ttyHS1')

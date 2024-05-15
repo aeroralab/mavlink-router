@@ -18,6 +18,7 @@ conf = configuration_data()
 conf.set('BINDIR', join_paths(get_option('prefix'), get_option('bindir')))
 conf.set_quoted('VERSION', meson.project_version(), description : 'Project version')
 conf.set_quoted('PACKAGE', meson.project_name())
+conf.set('DEFAULT_UART_PORT', get_option('defaultuartport'))
 
 cxx = meson.get_compiler('cpp')
 cc = meson.get_compiler('c')
@@ -33,6 +34,8 @@ if systemd_system_unit_dir == 'auto'
 		dep_systemd = dependency('systemd')
 		systemd_system_unit_dir = dep_systemd.get_variable(pkgconfig: 'systemdsystemunitdir')
 endif
+
+default_conf_dir = get_option('defaultconfdir')
 
 dep_gtest = dependency('gtest', main : true, required : false)
 
@@ -133,6 +136,13 @@ configure_file(
         output: 'mavlink-router.service',
         configuration: conf,
         install_dir: systemd_system_unit_dir,
+)
+
+configure_file(
+        input: 'mavlink-router.conf.in',
+        output: 'main.conf',
+        configuration: conf,
+        install_dir: default_conf_dir,
 )
 
 subdir('src')
