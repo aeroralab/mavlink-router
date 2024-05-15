@@ -9,7 +9,7 @@ Vcs-Browser: https://github.com/mavlink-router/mavlink-router
 
 Package: mavlink-router
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+#Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: MAVLink message distributions between multiple endpoints
  It distributes packets to a single port or multiple endpoints depending
  on the target address. Connections can be made via UART, UDP or TCP.
