@@ -243,6 +243,8 @@ public:
     // messages are accepted.
     static uint16_t sniffer_sysid;
 
+    void add_sys_comp_id(uint8_t sysid, uint8_t compid) { _add_sys_comp_id(sysid, compid); }
+
 protected:
     virtual int read_msg(struct buffer *pbuf);
     virtual ssize_t _read_msg(uint8_t *buf, size_t len) = 0;
@@ -337,12 +339,12 @@ public:
     static int parse_udp_mode(const char *val, size_t val_len, void *storage, size_t storage_len);
     static bool validate_config(const UdpEndpointConfig &config);
 
-protected:
     bool open(const char *ip, unsigned long port,
               UdpEndpointConfig::Mode mode = UdpEndpointConfig::Mode::Client);
     int open_ipv4(const char *ip, unsigned long port, UdpEndpointConfig::Mode mode);
     int open_ipv6(const char *ip, unsigned long port, UdpEndpointConfig::Mode mode);
 
+protected:
     ssize_t _read_msg(uint8_t *buf, size_t len) override;
 
     union {
@@ -380,11 +382,11 @@ public:
     static const char *section_pattern;
     static bool validate_config(const TcpEndpointConfig &config);
 
-protected:
     bool open(const std::string &ip, unsigned long port);
     static int open_ipv4(const char *ip, unsigned long port, sockaddr_in &sockaddr);
     static int open_ipv6(const char *ip, unsigned long port, sockaddr_in6 &sockaddr6);
 
+protected:
     ssize_t _read_msg(uint8_t *buf, size_t len) override;
 
     void _schedule_reconnect();

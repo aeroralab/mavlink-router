@@ -34,6 +34,7 @@
 #include "comm.h"
 #include "endpoint.h"
 #include "logendpoint.h"
+#include "zeroconf.h"
 #include "mainloop.h"
 
 #define DEFAULT_CONFFILE "/etc/mavlink-router/main.conf"
@@ -589,6 +590,8 @@ fail:
     return ret;
 }
 
+static constexpr const char* kZeroconfRegistration = "_mavlink._tcp";
+
 int main(int argc, char *argv[])
 {
     Mainloop &mainloop = Mainloop::init();
@@ -624,6 +627,7 @@ int main(int argc, char *argv[])
         goto close_log;
     }
 
+    Zeroconf::init(config.tcp_port, std::string(kZeroconfRegistration));
     retcode = mainloop.loop();
 
     Log::close();

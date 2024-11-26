@@ -66,6 +66,7 @@ public:
     void mod_timeout(Timeout *t, uint32_t timeout_msec);
 
     bool add_endpoints(const Configuration &config);
+    bool add_endpoint(std::shared_ptr<Endpoint> endpoint);
     void clear_endpoints();
 
     /*

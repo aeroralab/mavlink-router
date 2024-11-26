@@ -31,6 +31,7 @@
 
 #include "autolog.h"
 #include "tlog.h"
+#include "zeroconf.h"
 
 static std::atomic<bool> should_exit{false};
 
@@ -244,6 +245,8 @@ accept_error:
 
 int Mainloop::loop()
 {
+    Zeroconf &zeroconf = Zeroconf::get_instance();
+    int dns_sd_fd = zeroconf.sockFd();
     const int max_events = 8;
     struct epoll_event events[max_events];
     int r;
@@ -258,6 +261,11 @@ int Mainloop::loop()
                 std::bind(&Mainloop::_log_aggregate_timeout, this, std::placeholders::_1),
                 this);
 
+    if (dns_sd_fd > -1) {
+        fcntl(dns_sd_fd, F_SETFL, O_NONBLOCK | O_ASYNC);
+        this->add_fd(dns_sd_fd, &dns_sd_fd, EPOLLIN);
+    }
+
     while (!should_exit.load(std::memory_order_relaxed)) {
         int i;
 
@@ -270,7 +278,10 @@ int Mainloop::loop()
             if (events[i].data.ptr == &g_tcp_fd) {
                 handle_tcp_connection();
                 continue;
-            }
+            } else if (events[i].data.ptr == &dns_sd_fd) {
+                zeroconf.processResult();
+                continue;
+	    }
 
             auto *p = static_cast<Pollable *>(events[i].data.ptr);
 
@@ -306,6 +317,9 @@ int Mainloop::loop()
 
         _del_timeouts();
     }
+
+    if (dns_sd_fd > -1)
+        this->remove_fd(dns_sd_fd);
 
     if (_log_endpoint != nullptr) {
         _log_endpoint->stop();
@@ -357,6 +371,13 @@ bool Mainloop::dedup_check_msg(const buffer *buf)
 {
     return _msg_dedup.check_packet(buf->data, buf->len)
         == Dedup::PacketStatus::NEW_PACKET_OR_TIMED_OUT;
+}
+
+bool Mainloop::add_endpoint(std::shared_ptr<Endpoint> endpoint)
+{
+    g_endpoints.emplace_back(endpoint);
+    this->add_fd(endpoint->fd, endpoint.get(), EPOLLIN);
+    return true;
 }
 
 bool Mainloop::add_endpoints(const Configuration &config)
