@@ -43,6 +43,7 @@ struct Configuration {
     std::vector<UdpEndpointConfig> udp_configs;
     std::vector<TcpEndpointConfig> tcp_configs;
     unsigned long sniffer_sysid;
+    bool enable_zeroconf{false};
 };
 
 struct endpoint_entry {

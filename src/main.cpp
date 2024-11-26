@@ -54,9 +54,10 @@ static const struct option long_options[] = {{"endpoints", required_argument, nu
                                              {"verbose", no_argument, nullptr, 'v'},
                                              {"version", no_argument, nullptr, 'V'},
                                              {"sniffer-sysid", required_argument, nullptr, 's'},
+                                             {"enable-zeroconf", no_argument, nullptr, 'Z'},
                                              {}};
 
-static const char *short_options = "he:rt:c:d:l:p:g:vV:s:T:";
+static const char *short_options = "he:rt:c:d:l:p:g:vV:s:T:Z";
 
 static void help(FILE *fp)
 {
@@ -87,6 +88,7 @@ static void help(FILE *fp)
         "  -v --verbose                 Verbose. Same as --debug-log-level=debug\n"
         "  -V --version                 Show version\n"
         "  -s --sniffer-sysid           Sysid that all messages are sent to.\n"
+        "  -Z --enable-zeroconf         Enable zeroconf and register as _mavlink._tcp service.\n"
         "  -h --help                    Print this message\n",
         program_invocation_short_name);
 }
@@ -299,6 +301,9 @@ static int parse_argv(int argc, char *argv[], Configuration &config)
         case 'd':
         case 'V':
             break; // These options were parsed on pre_parse_argv
+        case 'Z':
+            config.enable_zeroconf = true;
+            break;
         case '?':
         default:
             help(stderr);
@@ -431,7 +436,8 @@ static int parse_confs(ConfFile &conffile, Configuration &config)
         {"ReportStats",         false, ConfFile::parse_bool,    OPTIONS_TABLE_STRUCT_FIELD(Configuration, report_msg_statistics)},
         {"DebugLogLevel",       false, parse_log_level,         OPTIONS_TABLE_STRUCT_FIELD(Configuration, debug_log_level)},
         {"DeduplicationPeriod", false, ConfFile::parse_ul,      OPTIONS_TABLE_STRUCT_FIELD(Configuration, dedup_period_ms)},
-        {"SnifferSysid",    false, ConfFile::parse_ul,      OPTIONS_TABLE_STRUCT_FIELD(Configuration, sniffer_sysid)},
+        {"SnifferSysid",        false, ConfFile::parse_ul,      OPTIONS_TABLE_STRUCT_FIELD(Configuration, sniffer_sysid)},
+        {"EnableZeroconf",      false, ConfFile::parse_bool,    OPTIONS_TABLE_STRUCT_FIELD(Configuration, enable_zeroconf)},
         {}
     };
     // clang-format on
@@ -627,7 +633,7 @@ int main(int argc, char *argv[])
         goto close_log;
     }
 
-    Zeroconf::init(config.tcp_port, std::string(kZeroconfRegistration));
+    Zeroconf::init(config.enable_zeroconf ? config.tcp_port : 0, std::string(kZeroconfRegistration));
     retcode = mainloop.loop();
 
     Log::close();
