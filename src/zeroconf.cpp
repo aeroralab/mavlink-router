@@ -194,7 +194,7 @@ void Zeroconf::resolveCallBack(DNSServiceRef serviceRef,
                     auto udp = std::make_shared<UdpEndpoint>(name);
                     udp->add_sys_comp_id(255, MAV_COMP_ID_MISSIONPLANNER);
                     char* ip = inet_ntoa(((struct sockaddr_in *)addrInfo->ai_addr)->sin_addr);
-                    int fd = udp->open_ipv4(ip, ntohs(port), UdpEndpointConfig::Mode::Client);
+                    int fd = udp->open(ip, ntohs(port), UdpEndpointConfig::Mode::Client);
                     if (fd > -1) {
                         log_info("Found %s at %s:%d", hosttarget, ip, ntohs(port));
                         Mainloop::get_instance().add_endpoint(udp);
