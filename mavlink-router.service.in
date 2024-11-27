@@ -1,5 +1,6 @@
 [Unit]
 Description=MAVLink Router
+After=mdns.service
 
 [Service]
 Type=simple
