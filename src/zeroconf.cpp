@@ -192,6 +192,7 @@ void Zeroconf::resolveCallBack(DNSServiceRef serviceRef,
                 if (addrInfo->ai_family == AF_INET) {
                     std::string name = std::string(hosttarget);
                     auto udp = std::make_shared<UdpEndpoint>(name);
+                    udp->add_sys_comp_id(255, MAV_COMP_ID_MISSIONPLANNER);
                     char* ip = inet_ntoa(((struct sockaddr_in *)addrInfo->ai_addr)->sin_addr);
                     int fd = udp->open_ipv4(ip, ntohs(port), UdpEndpointConfig::Mode::Client);
                     if (fd > -1) {
